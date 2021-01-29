@@ -1,0 +1,307 @@
+html, body, #root {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  box-sizing: border-box;
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.body-wrapper {
+  width: 100%;
+  height: 100%;
+}
+.body-wrapper p {
+  color: black;
+  margin: 0px;
+}
+.body-wrapper .sidePanel {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  background-color: #323232;
+  z-index: 10;
+  width: 0px;
+  height: 100%;
+  z-index: 10;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.66, 0.41, 0, 1);
+}
+.body-wrapper .sidePanel.showNow {
+  border-left: 1.5px solid #222;
+  background-color: #323232;
+  width: 600px;
+}
+.body-wrapper .cancel {
+  width: 20px;
+  border-radius: 50%;
+  height: 20px;
+  transition-delay: 250ms;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.66, 0.41, 0, 1);
+  transform: scale(0) rotate(180deg);
+  background-color: white;
+  text-decoration: none;
+}
+.body-wrapper .shown {
+  position: absolute;
+  top: 5px;
+  cursor: pointer;
+  left: 5px;
+  text-decoration: none;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 10px;
+  height: 15px;
+  width: 15px;
+  padding: 3px;
+  color: black;
+  text-align: center;
+  line-height: 10px;
+  transition-delay: 250ms;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.66, 0.41, 0, 1);
+  transform: scale(1.7) rotate(0deg);
+  background-color: white;
+  font-size: 1.5sem;
+}
+.body-wrapper .shown:hover {
+  background-color: #2ac2ba;
+}
+.body-wrapper .sidePanel-nav {
+  padding-left: 30px;
+  display: flex;
+  height: 50px;
+  flex-flow: row nowrap;
+  align-items: baseline;
+  justify-content: center;
+}
+.body-wrapper .sidePanel-nav h2 {
+  opacity: 0;
+  transition-duration: 150ms;
+  transition-delay: 150ms;
+}
+.body-wrapper .showSidePanelNav {
+  border-bottom: 1.5px solid #222;
+}
+.body-wrapper .showSidePanelNav h2 {
+  color: white;
+  margin: 0px 10px;
+  opacity: 1;
+}
+
+.calWrapper {
+  background-color: #212121;
+  height: 100%;
+}
+.calWrapper .calNav {
+  height: 15%;
+  display: flex;
+  flex-flow: row nowrap;
+  background-color: #323232;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+.calWrapper .calNav h1 {
+  display: inline;
+  color: white;
+  padding: 0px;
+  margin: 0px 7px;
+}
+.calWrapper .calNavBars {
+  cursor: pointer;
+  font-size: 1.7rem;
+  margin: 0px;
+  margin-left: 20px;
+}
+.calWrapper .calNavControl {
+  font-size: 1.7rem;
+  margin: 0px;
+}
+.calWrapper .calNavControl * {
+  margin: 5px;
+  cursor: pointer;
+}
+.calWrapper .calBody {
+  background-color: none;
+  height: 80%;
+  margin: 20px;
+}
+.calWrapper .calBody .glow {
+  border: 1px solid gold;
+}
+.calWrapper .calBody table {
+  min-width: 100%;
+  min-height: 80%;
+}
+.calWrapper .calBody table td {
+  margin: 5px;
+  background-color: #323232;
+  border: none;
+  border-radius: 2px;
+  height: 80px;
+  width: 12%;
+  cursor: pointer;
+  position: relative;
+  transition-duration: 150ms;
+  box-sizing: border-box;
+}
+.calWrapper .calBody table td h3 {
+  display: inline;
+  margin: 0px;
+  font-size: 1rem;
+  color: white;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+.calWrapper .calBody table td:hover h3 {
+  color: lightseagreen;
+}
+.calWrapper .calBody table td:hover {
+  border: 1px solid lightseagreen;
+}
+
+.LoginPanel {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  background-color: #323232;
+  border-right: 1.5px solid #222;
+  width: 0px;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.66, 0.41, 0, 1);
+}
+
+.showLogin {
+  width: 25%;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.66, 0.41, 0, 1);
+}
+
+.LoginMenuHide {
+  transform: scale(0);
+}
+
+.LoginMenuShow {
+  position: relative;
+  transform: scale(1);
+  height: 100%;
+  transition-delay: 250ms;
+  color: white;
+}
+.LoginMenuShow .buttons {
+  margin: 5px;
+}
+
+.LoginCancel {
+  z-index: 100;
+  box-sizing: content-box;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: white;
+  border-radius: 50%;
+  margin: 5px;
+  font-size: 1.5em;
+  padding: 3px;
+  display: inline-block;
+  height: 18px;
+  cursor: pointer;
+  transition-duration: 200ms;
+}
+
+.LoginCancel:hover {
+  background-color: #2ac2ba;
+}
+
+.AuthModal {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(10, 10, 10, 0.5);
+  z-index: 200;
+  width: 100%;
+  height: 100%;
+  transform: scale(0);
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.showModal {
+  transform: scale(1);
+  transition-duration: 200ms;
+}
+
+.AuthForm {
+  background-color: #faf9f9;
+  width: 50%;
+  height: 70%;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+.AuthForm .LoginCancel {
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+.AuthForm .AuthChoice {
+  width: 80%;
+  height: 15%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+.AuthForm .AuthChoice h4 {
+  padding: 0px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}
+.AuthForm .AuthChoice div {
+  box-sizing: border-box;
+  width: 50%;
+  height: 100%;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  border-radius: 5px;
+  transition-duration: 250ms;
+}
+.AuthForm .AuthDetails {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 60%;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.AuthForm .AuthDetails * {
+  width: 95%;
+}
+
+.addCol {
+  background-color: #ABC;
+  color: black;
+}
+
+/*# sourceMappingURL=App.css.map */
