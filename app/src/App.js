@@ -8,41 +8,16 @@ const days = (date) => {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 }
 
-const Calendar = (props) => {
+const Calendar = ({todos, getToDos, togglePanel}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [today, setToday] = useState(new Date());
   const [showLoginPanel, setShowLoginPanel] = useState(0);
-  const [todos, setTodos] = useState([]);
   const [forceReset, setForceReset] = useState({});
 
   
   useEffect(() => {
-    console.log('in use effect...')
-    if(localStorage.getItem('token') === null)
-      return;
-
-    fetch("http://localhost:5000/getTodos",{
-      method : "POST",
-      headers : {
-        "Authorization" : `Bearer ${localStorage.getItem('token')}`,
-        "Content-Type" : "application/json"
-      },
-      body : JSON.stringify({
-        month : currentDate.getMonth(),
-        year : currentDate.getFullYear(),
-      })
-    }).then(res => res.json()).then(res => {
-      if(res.err){
-        console.log("ERROR IN GETTING...");
-      } else {
-        console.log(res.data);
-        setTodos(res.data);
-      }
-    })
-
+    getToDos(currentDate);
   },[currentDate,today,forceReset])
-
-  useEffect(() => {console.log('use effecting...')})
 
   const setBackToday = () => {
     setCurrentDate(today);
@@ -82,7 +57,7 @@ const Calendar = (props) => {
   return (
     <div className="calWrapper">
       <Cal.CalNav changeLogin={setShowLoginPanel} today={setBackToday} prevMonth={prevMonth} nextMonth={nextMonth} {...dateInfo} />
-      <Cal.CalBody todos={todos} togglePanel={props.togglePanel} today={currentDayFlag} {...dateInfo}/>
+      <Cal.CalBody todos={todos} togglePanel={togglePanel} today={currentDayFlag} {...dateInfo}/>
       <LoginPanel display={showLoginPanel} changeDisplay={setShowLoginPanel}/>
     </div>
   );
@@ -93,9 +68,46 @@ class App extends Component{
     super();
     this.state = {
       showPanel : false,
-      todos : []
+      todos : [],
+      allTodos : [],
     }
     this.togglePanel = this.togglePanel.bind(this);
+  }
+
+  getToDos(currentDate){
+    if(localStorage.getItem('token') === null)
+      return;
+
+    fetch("http://localhost:5000/getTodos",{
+      method : "POST",
+      headers : {
+        "Authorization" : `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type" : "application/json"
+      },
+      body : JSON.stringify({
+        month : currentDate.getMonth(),
+        year : currentDate.getFullYear(),
+      })
+    }).then(res => res.json()).then(res => {
+      if(res.err){
+        console.log("ERROR IN GETTING...");
+      } else {
+        console.log("GOTTEN TODOS: ",res.data);
+        this.setState({allTodos : res.data}, () => {
+          if(this.state.showPanel === true){
+
+            const TODOIDS = this.state.allTodos.map(ele => ele.TODOID);
+
+            let tempcur = [...this.state.allTodos];
+            tempcur = tempcur.filter(ele => {
+              return ele._DAY === this.state.day && ele._MONTH === this.state.month + 1 && ele._YEAR === this.state.year
+            })
+            this.setState({todos : tempcur});
+          }
+        });
+        // setTodos(res.data);
+      }
+    })
   }
 
   togglePanel(day,month,year,spl,myTodos){
@@ -109,13 +121,16 @@ class App extends Component{
     } else {
       this.setState(state => ({
         showPanel : true,
-        day,month,year,todos : myTodos
+        day : day,
+        month : month,
+        year : year,
+        todos : myTodos
       }));
     }
   }
 
   componentDidMount(pp,ps){
-    console.log(pp,ps);
+    this.getToDos(new Date());
   }
 
   render(){
@@ -124,8 +139,8 @@ class App extends Component{
 
     return (
       <div className='body-wrapper'>
-          <Calendar togglePanel={this.togglePanel}/>
-          <SidePanel todos={this.state.myTodos} cancelPanel={this.togglePanel} {...dateInfo} show={this.state.showPanel}/>
+          <Calendar todos={this.state.allTodos} getToDos={(x) => {this.getToDos(x)}} togglePanel={this.togglePanel}/>
+          <SidePanel todos={this.state.todos} getToDos={(x) => {this.getToDos(x)}} cancelPanel={this.togglePanel} {...dateInfo} show={this.state.showPanel}/>
       </div>
     );
   }

@@ -1,11 +1,10 @@
 import React from 'react';
 import {Names} from './week.js'
+import TodoList from './TodoList.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
-const SidePanel = ({todos,show,cancelPanel,...dateInfo}) => {
-    console.log(dateInfo)
-    console.log(todos);
+const SidePanel = ({getToDos, todos, show, cancelPanel,...dateInfo}) => {
 
     let dayOfWeek = new Date(dateInfo.year,dateInfo.month,dateInfo.day).getDay();
     let suff = "st";
@@ -24,11 +23,7 @@ const SidePanel = ({todos,show,cancelPanel,...dateInfo}) => {
             <h2>{Names.month[dateInfo.month]}{show ? " |" : ""}</h2>
             <h2>{dateInfo.year}</h2>
         </div>
-        {todos && todos.map(ele => {
-            return <h1>
-                {ele.TITLE}
-            </h1>
-        })}
+        <TodoList year={dateInfo.year} month={dateInfo.month} getToDos={getToDos} dateInfo={dateInfo} todos={todos}/>
     </div>
 }
 

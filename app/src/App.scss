@@ -175,7 +175,7 @@ html, body, #root {
             td h3{
                 display: inline;
                 margin: 0px;
-                font-size: 1rem;
+                font-size: 1.2rem;
                 color: white;
                 position: absolute;
                 top: 5px;
@@ -183,6 +183,21 @@ html, body, #root {
             }
             td:hover h3{
                 color: lightseagreen;
+            }
+            td h4{
+                display: inline-block;
+                margin: 0px;
+                font-size: 0.7rem;
+                height: 15px;
+                width: 15px;
+                text-align: center;
+                color: black;
+                font-weight: bolder;
+                background-color: orange;
+                border-radius: 5px;
+                position: absolute;
+                top: 5px;
+                right: 5px;
             }
             td:hover {
                 border: 1px solid lightseagreen;
@@ -326,4 +341,142 @@ html, body, #root {
 .addCol{
     background-color: #ABC;
     color: black;
+}
+
+.todolist{
+    // border: 1px solid red;
+    height: 92%;
+    overflow: auto;
+    padding: 10px 5px;
+    background-color: #222;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-between;
+    > div{
+        width: 100%;
+    }
+    .todonav{
+        // border: 1px solid gold;
+        height: 10%;
+        border-radius: 5px;
+        overflow: hidden;
+        color: white;
+        padding: 10px;
+        background-color: #323232;
+    }
+    .todomaker{
+        // border: 1px solid gold;
+        border-radius: 5px;
+        background-color: #323232;
+        height: 10%;
+        overflow: hidden;
+        #whitebg, #whitebg1{
+            // background-color: white;
+            color: white;
+            font-size: 1.5rem;
+            border-radius: 5px;
+            height: 80%;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+        #whitebg:active, #whitebg1:active{
+            background-color: rgb(121, 121, 121);
+            transition-duration: 150ms;
+        }
+        .blocker{
+            background-color: transparent;
+            height: 100%;
+            text-align: center;
+            // padding-top: 5px;
+            overflow: hidden;
+            #highlight-white{
+                color: #444;
+                transition-duration: 150ms;
+                font-size: 2rem;
+            }
+        }
+        .h0{
+            height: 0%;
+            transition-duration: 150ms;
+        }
+        .h1{
+            height: 100%;
+            transition-duration: 150ms;
+        }
+        .blocker:hover #highlight-white{
+            color:white;
+        }
+        .todoform{
+            height: 100%;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+            align-items: center;
+            input{
+                flex-grow: 5;
+                margin: 0px 5px;
+                height: 80%;
+                color: white;
+                background-color: transparent;
+                border: none;
+                border-bottom: 1px solid white;
+            }
+            input:focus{
+                outline: none;
+            }
+            select{
+                height: 80%;
+                background-color: transparent;
+                flex-grow: 1;
+            }
+        }
+    }
+    .todos{
+        // border: 1px solid gold;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #323232;
+        max-height: 77%;
+        min-height: 77%;
+        overflow: auto;
+    }
+    .todo{
+        padding: 10px;
+        margin: 10px 0px;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0px 0px 4px gray;
+        height: 40px;
+        color: white;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        .flex-row-start{
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        #whitebg{
+            color: white;
+            font-size: 1rem;
+            border-radius: 5px;
+            height: 80%;
+            margin: 15px;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+            // flex-grow: 1;
+        }
+        #whitebg:active {
+            background-color: rgb(121, 121, 121);
+            transition-duration: 150ms;
+        }
+    }
 }

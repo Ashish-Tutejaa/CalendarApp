@@ -157,7 +157,7 @@ html, body, #root {
 .calWrapper .calBody table td h3 {
   display: inline;
   margin: 0px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: white;
   position: absolute;
   top: 5px;
@@ -165,6 +165,21 @@ html, body, #root {
 }
 .calWrapper .calBody table td:hover h3 {
   color: lightseagreen;
+}
+.calWrapper .calBody table td h4 {
+  display: inline-block;
+  margin: 0px;
+  font-size: 0.7rem;
+  height: 15px;
+  width: 15px;
+  text-align: center;
+  color: black;
+  font-weight: bolder;
+  background-color: orange;
+  border-radius: 5px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 .calWrapper .calBody table td:hover {
   border: 1px solid lightseagreen;
@@ -302,6 +317,137 @@ html, body, #root {
 .addCol {
   background-color: #ABC;
   color: black;
+}
+
+.todolist {
+  height: 92%;
+  overflow: auto;
+  padding: 10px 5px;
+  background-color: #222;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.todolist > div {
+  width: 100%;
+}
+.todolist .todonav {
+  height: 10%;
+  border-radius: 5px;
+  overflow: hidden;
+  color: white;
+  padding: 10px;
+  background-color: #323232;
+}
+.todolist .todomaker {
+  border-radius: 5px;
+  background-color: #323232;
+  height: 10%;
+  overflow: hidden;
+}
+.todolist .todomaker #whitebg, .todolist .todomaker #whitebg1 {
+  color: white;
+  font-size: 1.5rem;
+  border-radius: 5px;
+  height: 80%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+.todolist .todomaker #whitebg:active, .todolist .todomaker #whitebg1:active {
+  background-color: #797979;
+  transition-duration: 150ms;
+}
+.todolist .todomaker .blocker {
+  background-color: transparent;
+  height: 100%;
+  text-align: center;
+  overflow: hidden;
+}
+.todolist .todomaker .blocker #highlight-white {
+  color: #444;
+  transition-duration: 150ms;
+  font-size: 2rem;
+}
+.todolist .todomaker .h0 {
+  height: 0%;
+  transition-duration: 150ms;
+}
+.todolist .todomaker .h1 {
+  height: 100%;
+  transition-duration: 150ms;
+}
+.todolist .todomaker .blocker:hover #highlight-white {
+  color: white;
+}
+.todolist .todomaker .todoform {
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+.todolist .todomaker .todoform input {
+  flex-grow: 5;
+  margin: 0px 5px;
+  height: 80%;
+  color: white;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid white;
+}
+.todolist .todomaker .todoform input:focus {
+  outline: none;
+}
+.todolist .todomaker .todoform select {
+  height: 80%;
+  background-color: transparent;
+  flex-grow: 1;
+}
+.todolist .todos {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #323232;
+  max-height: 77%;
+  min-height: 77%;
+  overflow: auto;
+}
+.todolist .todo {
+  padding: 10px;
+  margin: 10px 0px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0px 0px 4px gray;
+  height: 40px;
+  color: white;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+.todolist .todo .flex-row-start {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+.todolist .todo #whitebg {
+  color: white;
+  font-size: 1rem;
+  border-radius: 5px;
+  height: 80%;
+  margin: 15px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+.todolist .todo #whitebg:active {
+  background-color: #797979;
+  transition-duration: 150ms;
 }
 
 /*# sourceMappingURL=App.css.map */

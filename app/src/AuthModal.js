@@ -58,7 +58,6 @@ export default function AuthModal({display, setDisplay}){
                                         alert(res.err)
                                     } else {
                                         alert("Successfully logged in.");
-                                        console.log("RECIEVED", res);
                                         localStorage.setItem('token',res.token);
                                         setDisplay([0,0]);
                                     }
@@ -97,7 +96,6 @@ export default function AuthModal({display, setDisplay}){
                                         alert(res.err)
                                     } else {
                                         alert("Successfully registered and logged in.");
-                                        console.log("RECIEVED", res);
                                         localStorage.setItem('token',res.token);
                                         setDisplay([0,0])
                                     }

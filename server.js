@@ -22,6 +22,7 @@ const SECRET = CONFIG.secret;
 //END
   
 //DATABASE STUFF
+const uuid = require('uuid')
 const mysql = require('mysql');
 const { default: config } = require('./config.js');
 var connection = mysql.createConnection({
@@ -44,7 +45,7 @@ const CORS = (origin,method,header) => {
     return (req,res,next) => {
             res.set({
                 'Access-Control-Allow-Origin' : origin,
-                'Access-Control-Allow-Method' : method,
+                'Access-Control-Allow-Methods' : method,
                 'Access-Control-Allow-Headers' : header
             })
             next();
@@ -85,12 +86,18 @@ app.options('/register', CORS(LH3,'POST','Content-Type'), (req,res) => {
 app.options('/getTodos',CORS(LH3,'POST','Authorization, Content-Type'), (req,res) => {
     res.status(200).end();
 })
+app.options('/createTodo', CORS(LH3,'POST','Authorization, Content-Type'), (req,res) => {
+    res.status(200).end();
+})
+app.options('/deleteTodo', CORS(LH3, 'DELETE', 'Authorization, todo-id'), (req,res) => {
+    res.status(200).end();
+})
+app.options('/updateTodo', CORS(LH3, 'PUT', 'Authorization, todo-id'), (req,res) => {
+    res.status(200).end();
+})
 //END
 
 app.post('/login', CORS(LH3,'POST','Content-Type'), (req,res,next) => {
-
-    console.log(req_obj, req.headers);
-    console.log(req_obj, req.body);
 
     connection.query(`SELECT * FROM USERS WHERE UNAME=? AND PASS =?`, [req.body.username, req.body.password],(dberr,dbres) => {
         if(dberr){
@@ -114,8 +121,6 @@ app.post('/login', CORS(LH3,'POST','Content-Type'), (req,res,next) => {
 })
 
 app.post('/register', CORS(LH3,'POST','Content-Type'), (req,res,next) => {
-    console.log(req_obj, req.headers);
-    console.log(req_obj, req.body);
     connection.query(`SELECT * FROM USERS WHERE UNAME=? AND PASS =?`, [req.body.username, req.body.password],(dberr,dbres) => {
         if(dberr){
             console.log(db_err,err);
@@ -145,15 +150,29 @@ app.post('/register', CORS(LH3,'POST','Content-Type'), (req,res,next) => {
     })
 })
 
-app.post('/getTodos', CORS(LH3,'POST','Authorization, Content-Type'), AUTH, (req,res,next) => {
-    console.log("RECIEVED")
-    console.log(req_obj, req.body);
-    console.log(req_obj, req.headers);
-    console.log(req_obj, req.username);
+app.post('/createTodo', CORS(LH3,'POST','Authorization, Content-Type'), AUTH, (req,res,next) => {
+    console.log("CREATING!", req.body.todo);
+    const todo = {...req.body.todo};
+    connection.query(`INSERT INTO 
+    TODOS(TODOID,UNAME,TITLE,DONE,IMPORTANCE,_MONTH,_YEAR,_DAY)
+     VALUES (?,?,?,?,?,?,?,?);
+    `, [uuid.v1(), req.username, todo.title, 'N', todo.importance, todo.month, todo.year, todo.day], (dberr, dbres, fields) => {
+        if(dberr){
+            console.log(dberr);
+            res.status(500).json({err : dberr});
+        } else {
+            console.log('successfully inserted...', fields);
+            res.status(200).json({data : "DONE"})
+        }
+    })
 
+})
+
+app.post('/getTodos', CORS(LH3,'POST','Authorization, Content-Type'), AUTH, (req,res,next) => {
+    console.log("GET TODOS")
     connection.query(`SELECT *
      FROM USERS NATURAL JOIN TODOS
-     WHERE UNAME = ?`,[req.username],(dberr,dbres) => {
+     WHERE UNAME = ? AND _MONTH = ? AND _YEAR = ?`,[req.username, req.body.month + 1, req.body.year],(dberr,dbres) => {
          if(dberr){
              res.status(500).json({err : dberr});
          } else {
@@ -161,6 +180,41 @@ app.post('/getTodos', CORS(LH3,'POST','Authorization, Content-Type'), AUTH, (req
          }
      })
 
+})
+
+app.delete('/deleteTodo', CORS(LH3, 'DELETE', 'Authorization, todo-id'), AUTH, (req,res,next) => {
+    console.log('DELETION...');
+    connection.query(`
+    DELETE FROM TODOS
+    WHERE TODOS.TODOID = ?; 
+    `, [req.headers['todo-id']], (dberr, dbres, fields) => {
+        if(dberr){
+            console.log(dberr);
+            res.status(500).json({err : dberr});
+        } else {
+            res.status(200).json({success : true})
+        }
+    })
+})
+
+app.put('/updateTodo', CORS(LH3, 'PUT', 'Authorization, todo-id'), AUTH, (req,res,next) => {
+    console.log('UPDATING...');
+    const [todoID, check] = req.headers['todo-id'].split('#');
+    let actual = check === 'Y' ? 'N' : 'Y';
+    console.log(todoID, check, actual);
+    connection.query(`
+    UPDATE TODOS
+    SET TODOS.DONE = ?
+    WHERE TODOS.TODOID = ?; 
+    `, [actual, todoID], (dberr, dbres, fields) => {
+        console.log(fields, dbres);
+        if(dberr){
+            console.log(dberr);
+            res.status(500).json({err : dberr});
+        } else {
+            res.status(200).json({success : true})
+        }
+    })
 })
 
 app.listen(port, () => {console.log(`listening@${port}`)})

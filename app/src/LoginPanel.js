@@ -13,8 +13,6 @@ const LoginPanel = ({display, changeDisplay}) => {
     const flexCenter = 'd-flex flex-column justify-content-center align-items-center';
     const flexStart = 'd-flex flex-column justify-content-start align-items-start'
     const [showModal, setShowModal] = useState([0,0]);
-
-    console.log("DISPLAY: ", display);
     return <>
         <div className={`LoginPanel${display===0 ? "" : " showLogin"}`}>
             <FontAwesomeIcon className="LoginCancel" icon={faTimes} onClick={() => {changeDisplay(p => p === 0 ? 1 : 0)}}/>
