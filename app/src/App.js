@@ -8,7 +8,7 @@ const days = (date) => {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 }
 
-const Calendar = ({todos, getToDos, togglePanel}) => {
+const Calendar = ({clearAll, todos, getToDos, togglePanel}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [today, setToday] = useState(new Date());
   const [showLoginPanel, setShowLoginPanel] = useState(0);
@@ -58,7 +58,7 @@ const Calendar = ({todos, getToDos, togglePanel}) => {
     <div className="calWrapper">
       <Cal.CalNav changeLogin={setShowLoginPanel} today={setBackToday} prevMonth={prevMonth} nextMonth={nextMonth} {...dateInfo} />
       <Cal.CalBody todos={todos} togglePanel={togglePanel} today={currentDayFlag} {...dateInfo}/>
-      <LoginPanel display={showLoginPanel} changeDisplay={setShowLoginPanel}/>
+      <LoginPanel getToDos={getToDos} clearAll={clearAll} display={showLoginPanel} changeDisplay={setShowLoginPanel}/>
     </div>
   );
 }
@@ -72,6 +72,10 @@ class App extends Component{
       allTodos : [],
     }
     this.togglePanel = this.togglePanel.bind(this);
+  }
+
+  clearAll(){
+    this.setState({allTodos : [], todos : [], showPanel : false});
   }
 
   getToDos(currentDate){
@@ -139,7 +143,7 @@ class App extends Component{
 
     return (
       <div className='body-wrapper'>
-          <Calendar todos={this.state.allTodos} getToDos={(x) => {this.getToDos(x)}} togglePanel={this.togglePanel}/>
+          <Calendar clearAll={() => {this.clearAll()}} todos={this.state.allTodos} getToDos={(x) => {this.getToDos(x)}} togglePanel={this.togglePanel}/>
           <SidePanel todos={this.state.todos} getToDos={(x) => {this.getToDos(x)}} cancelPanel={this.togglePanel} {...dateInfo} show={this.state.showPanel}/>
       </div>
     );

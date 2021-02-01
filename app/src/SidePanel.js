@@ -18,10 +18,10 @@ const SidePanel = ({getToDos, todos, show, cancelPanel,...dateInfo}) => {
     return <div className={`sidePanel${show ? " showNow" : ""}`}>
         <FontAwesomeIcon icon={faTimes} className={`${show ? "shown" : "cancel"}`} onClick={() => {cancelPanel(dateInfo.day,dateInfo.month,dateInfo.year,-1)}}/>
         <div className={`sidePanel-nav${show ? " showSidePanelNav" : ""}`}>
-            <h2 >{Names.week[dayOfWeek]}{show ? " |" : ""}</h2>
-            <h2>{dateInfo.day}{show ? suff : ""}</h2>
-            <h2>{Names.month[dateInfo.month]}{show ? " |" : ""}</h2>
-            <h2>{dateInfo.year}</h2>
+            <h3 >{Names.week[dayOfWeek]}{show ? ", " : ""}</h3>
+            <h3>{dateInfo.day}{show ? suff : ""}</h3>
+            <h3>{Names.month[dateInfo.month]}</h3>
+            {/* <h3>{dateInfo.year}</h3> */}
         </div>
         <TodoList year={dateInfo.year} month={dateInfo.month} getToDos={getToDos} dateInfo={dateInfo} todos={todos}/>
     </div>

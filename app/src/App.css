@@ -26,7 +26,7 @@ html, body, #root {
   position: fixed;
   top: 0px;
   right: 0px;
-  background-color: #323232;
+  background-color: #222;
   z-index: 10;
   width: 0px;
   height: 100%;
@@ -36,8 +36,8 @@ html, body, #root {
 }
 .body-wrapper .sidePanel.showNow {
   border-left: 1.5px solid #222;
-  background-color: #323232;
-  width: 600px;
+  background-color: #222;
+  width: 450px;
 }
 .body-wrapper .cancel {
   width: 20px;
@@ -59,8 +59,8 @@ html, body, #root {
   border-radius: 50%;
   display: inline-block;
   margin: 10px;
-  height: 15px;
-  width: 15px;
+  height: 14px;
+  width: 14px;
   padding: 3px;
   color: black;
   text-align: center;
@@ -78,12 +78,13 @@ html, body, #root {
 .body-wrapper .sidePanel-nav {
   padding-left: 30px;
   display: flex;
-  height: 50px;
+  height: 8%;
   flex-flow: row nowrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
+  background-color: #323232;
 }
-.body-wrapper .sidePanel-nav h2 {
+.body-wrapper .sidePanel-nav h3 {
   opacity: 0;
   transition-duration: 150ms;
   transition-delay: 150ms;
@@ -91,7 +92,7 @@ html, body, #root {
 .body-wrapper .showSidePanelNav {
   border-bottom: 1.5px solid #222;
 }
-.body-wrapper .showSidePanelNav h2 {
+.body-wrapper .showSidePanelNav h3 {
   color: white;
   margin: 0px 10px;
   opacity: 1;
@@ -322,7 +323,7 @@ html, body, #root {
 .todolist {
   height: 92%;
   overflow: auto;
-  padding: 10px 5px;
+  padding: 1px;
   background-color: #222;
   display: flex;
   flex-flow: column nowrap;
@@ -333,17 +334,60 @@ html, body, #root {
   width: 100%;
 }
 .todolist .todonav {
-  height: 10%;
-  border-radius: 5px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 5px;
+  height: 7%;
+  border-radius: 3px;
   overflow: hidden;
-  color: white;
-  padding: 10px;
   background-color: #323232;
 }
-.todolist .todomaker {
+.todolist .todonav #whitebg {
+  color: #cecece;
+  font-size: 1rem;
   border-radius: 5px;
+  height: 30px;
+  width: 30px;
+  margin: 5px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+.todolist .todonav #whitebg:hover {
+  color: white;
+}
+.todolist .todonav #whitebg:active {
+  background-color: #797979;
+  transition-duration: 150ms;
+  color: white;
+}
+.todolist .todonav .flex-row-start {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 30%;
+}
+.todolist .todonav input {
+  margin: 0px;
+  color: white;
+  width: 70%;
+  background-color: #525252;
+  border: none;
+  border-radius: 5px;
+  transition-duration: 250ms;
+}
+.todolist .todonav input:focus {
+  outline: none;
+  background-color: gray;
+}
+.todolist .todomaker {
+  border-radius: 3px;
   background-color: #323232;
-  height: 10%;
+  height: 8%;
   overflow: hidden;
 }
 .todolist .todomaker #whitebg, .todolist .todomaker #whitebg1 {
@@ -355,6 +399,7 @@ html, body, #root {
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   flex-grow: 1;
 }
 .todolist .todomaker #whitebg:active, .todolist .todomaker #whitebg1:active {
@@ -365,6 +410,10 @@ html, body, #root {
   background-color: transparent;
   height: 100%;
   text-align: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
 }
 .todolist .todomaker .blocker #highlight-white {
@@ -409,18 +458,24 @@ html, body, #root {
 }
 .todolist .todos {
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 3px;
   background-color: #323232;
-  max-height: 77%;
-  min-height: 77%;
+  max-height: 84%;
+  min-height: 84%;
   overflow: auto;
 }
+.todolist .todo:hover {
+  box-shadow: 0px 0px 3px gray;
+  transition-duration: 100ms;
+}
+.todolist .dis {
+  filter: brightness(0.5);
+}
 .todolist .todo {
-  padding: 10px;
   margin: 10px 0px;
   border-radius: 5px;
   cursor: pointer;
-  box-shadow: 0px 0px 4px gray;
+  box-shadow: 0px 0px 1px gray;
   height: 40px;
   color: white;
   display: flex;
@@ -429,6 +484,7 @@ html, body, #root {
   align-items: center;
 }
 .todolist .todo .flex-row-start {
+  height: 100%;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;

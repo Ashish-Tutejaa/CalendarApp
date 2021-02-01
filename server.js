@@ -101,7 +101,7 @@ app.post('/login', CORS(LH3,'POST','Content-Type'), (req,res,next) => {
 
     connection.query(`SELECT * FROM USERS WHERE UNAME=? AND PASS =?`, [req.body.username, req.body.password],(dberr,dbres) => {
         if(dberr){
-            console.log(db_err,err);
+            console.log(db_err,db_err);
             res.status(500).json({err : db_err});
         } else {
             if(dbres.length === 0){

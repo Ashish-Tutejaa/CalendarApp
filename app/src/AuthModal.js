@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {Form, FormGroup, Label, Input} from 'reactstrap'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
-export default function AuthModal({display, setDisplay}){
+export default function AuthModal({clearAll, getToDos, display, setDisplay}){
 
     const [AuthOption, setAuthOption] = useState(display[1]);
     const [username, setUsername] = useState("");
@@ -60,6 +60,7 @@ export default function AuthModal({display, setDisplay}){
                                         alert("Successfully logged in.");
                                         localStorage.setItem('token',res.token);
                                         setDisplay([0,0]);
+                                        getToDos(new Date());
                                     }
                                 })
                             }} style={{marginTop: "28px"}} type='submit' name='submit' id='submit'></Input>
@@ -97,7 +98,8 @@ export default function AuthModal({display, setDisplay}){
                                     } else {
                                         alert("Successfully registered and logged in.");
                                         localStorage.setItem('token',res.token);
-                                        setDisplay([0,0])
+                                        setDisplay([0,0]);
+                                        getToDos(new Date());
                                     }
                                 })
                             }} style={{marginTop: "28px"}} type='submit' name='submit' id='submit'></Input>

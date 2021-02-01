@@ -1,9 +1,41 @@
 import React, {useState, useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faTimes, faLocationArrow, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTimes, faLocationArrow, faTrash, faSearch, faExclamationTriangle, faCheckSquare } from '@fortawesome/free-solid-svg-icons'
 import { UncontrolledTooltip } from 'reactstrap';
 
 const IMPORTANCE = ['green', 'yellow', 'red']
+
+const prefixMatch = (a,b) => {
+    let res = 0;
+    for(let i = 0 ; i<a.length && i<b.length ; i++){
+        if(a[i] === b[i])
+            res++;
+        else 
+            break;
+    }
+    return res;
+}
+
+const TodoNav = ({filter}) => {
+
+    const [search, setSearch] = useState('');
+
+    return   <div className='todonav'>
+            <input value={search} onChange={(e) => {setSearch(e.target.value)}} type='textarea'></input>
+
+        <div className='flex-row-start'>
+            <span id='whitebg'>
+                <FontAwesomeIcon onClick={() => {filter(search)}} icon={faSearch}/>
+            </span>
+            <span id='whitebg' onClick={() => {filter(1)}}>
+                <FontAwesomeIcon icon={faExclamationTriangle}/>
+            </span>
+            <span id='whitebg' onClick={() => {filter(2)}}>
+                <FontAwesomeIcon icon={faCheckSquare}/>
+            </span>
+        </div>
+    </div>
+}
 
 const TodoMaker = ({year, month, getToDos, dateInfo}) => {
 
@@ -71,6 +103,42 @@ const TodoList = ({year, month, getToDos, dateInfo, todos=[]}) => {
 
     const [curTodos, setCurTodos] = useState(todos);
 
+    const filter = x => {
+        let temp = [...curTodos];
+        if(typeof x === 'string'){
+            //prefix check sort
+            temp = temp.sort((a,b) => {
+                let f = prefixMatch(a.TITLE,x);
+                let s = prefixMatch(b.TITLE,x);
+                if(f > s)
+                    return -1;
+                else if(f < s)
+                    return 1;
+            return 0;
+            })
+            setCurTodos(temp);
+        } else if(x === 1){
+            //importance
+            temp = temp.sort((a,b) => {
+                if(a.IMPORTANCE > b.IMPORTANCE)
+                    return -1;
+                return 1;
+            })
+            setCurTodos(temp);
+        } else {
+            //done
+            temp = temp.sort((a,b) => {
+                if(a.DONE !== b.DONE){
+                    if(a.DONE === 'N')
+                        return -1;
+                return 1;
+                }
+            return 0;
+            })
+            setCurTodos(temp);
+        }
+    }
+
     const update = (todoid, checked) => {
         fetch('http://localhost:5000/updateTodo', {
             method : "PUT",
@@ -106,12 +174,21 @@ const TodoList = ({year, month, getToDos, dateInfo, todos=[]}) => {
         })
     }
 
-    useEffect(() => {setCurTodos(todos)}, [todos]);
+    useEffect(() => {
+        let t = [...todos];
+        t = t.sort((a,b) => {
+            if(a.DONE !== b.DONE){
+                if(a.DONE === 'N')
+                    return -1;
+            return 1;
+            }
+        return 0;
+        });
+        setCurTodos(t)
+    }, [todos]);
 
 return <div className='todolist'>
-    <div className='todonav'>
-        <h4>Todos for the day</h4>
-    </div>
+    
     <div className='todos'>
         {curTodos.map(ele => {
 
@@ -119,7 +196,7 @@ return <div className='todolist'>
                 borderLeft : `5px solid ${IMPORTANCE[ele.IMPORTANCE]}`
             }
 
-            return <div key={ele.TODOID}  className='todo'>
+            return <div key={ele.TODOID}  className={`todo ${ele.DONE === 'Y' ? 'dis' : ''}`}>
             
                     <div className='flex-row-start' style={{width:"70%"}}>
                         <span id='whitebg'>
@@ -129,7 +206,7 @@ return <div className='todolist'>
                             width:"12px"
                             }}></div>
                         </span>
-                        <h4>{ele.TITLE}</h4>
+                        <h5>{ele.TITLE}</h5>
                     </div>
 
                     <div className='flex-row-start' style={{width:"20%"}}>
@@ -143,6 +220,7 @@ return <div className='todolist'>
             </div>
         })}
     </div>
+    <TodoNav filter={filter}/>
     <TodoMaker year={year} month={month} getToDos={getToDos} dateInfo={dateInfo}/>
 </div>
 }

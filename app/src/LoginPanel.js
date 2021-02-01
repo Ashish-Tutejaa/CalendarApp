@@ -8,7 +8,7 @@ const loggedIn = () => {
     return localStorage.getItem('token');
 }
 
-const LoginPanel = ({display, changeDisplay}) => {
+const LoginPanel = ({getToDos, clearAll, display, changeDisplay}) => {
 
     const flexCenter = 'd-flex flex-column justify-content-center align-items-center';
     const flexStart = 'd-flex flex-column justify-content-start align-items-start'
@@ -30,11 +30,12 @@ const LoginPanel = ({display, changeDisplay}) => {
                     <Button onClick={() => {
                         localStorage.removeItem('token');
                         setShowModal([0,0]);
+                        clearAll();
                     }} className='buttons'>Sign Out</Button>
                 </>}
             </div>
         </div>
-        <AuthModal display={showModal} setDisplay={setShowModal}/>
+        <AuthModal getToDos={getToDos} display={showModal} setDisplay={setShowModal}/>
     </> 
 }
 
