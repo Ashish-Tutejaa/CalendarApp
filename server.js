@@ -2,9 +2,12 @@
 const CONFIG = require('./config.js');
 //END
 
+//PATH
+const path = require('path');
+
 //EXPRESS
 const express = require('express');
-const port = 5000;
+const port = process.env.PORT || 5000;
 const app = express();
 app.use(express.json());
 //END
@@ -23,23 +26,31 @@ const SECRET = CONFIG.secret;
   
 //DATABASE STUFF
 const uuid = require('uuid')
-const mysql = require('mysql');
-const { default: config } = require('./config.js');
-var connection = mysql.createConnection({
-    host : CONFIG.host,
-    user : CONFIG.user,
-    password : CONFIG.password,
-    database : CONFIG.database
+const mongoose = require('mongoose');  
+mongoose.connect(`mongodb+srv://${CONFIG.mongo_uname}:${CONFIG.mongo_pass}@mern.1ft2r.mongodb.net/${CONFIG.mongo_db}?retryWrites=true&w=majority
+`, {useUnifiedTopology: true,  useNewUrlParser: true}, (err) => {
+    console.log(err);
+    console.log("MONGO CONNECTED...");
+}); 
+const Schema = mongoose.Schema;
+const user = new Schema({
+    username : {type : String},
+    password : {type : String}
 })
-connection.connect((err) => {
-    if(err){
-        console.log(db_err,err);
-    } else {
-        console.log("DB SUCCESS");
-    }
-});
+const todo = new Schema({
+    TODOID : {type : String},
+    UNAME : {type : String},
+    TITLE : {type : String},
+    DONE : {type : String},
+    IMPORTANCE : {type : Number},
+    _MONTH : {type : Number},
+    _YEAR : {type : Number},
+    _DAY : {type : Number}
+})
+const userModel = mongoose.model('userModel', user);
+const todoModel = mongoose.model('todoModel', todo);
 //END
-
+ 
 //CORS MIDDLEWARE
 const CORS = (origin,method,header) => {
     return (req,res,next) => {
@@ -72,10 +83,6 @@ const AUTH = (req,res,next) => {
 }
 //END
 
-app.get('/', (req,res) => {
-    res.send("<h1>ok</h1>")
-})
-
 //CORS PREFLIGHT
 app.options('/login', CORS(LH3,'POST','Content-Type'), (req,res) => { 
     res.status(200).end();
@@ -99,16 +106,19 @@ app.options('/updateTodo', CORS(LH3, 'PUT', 'Authorization, todo-id'), (req,res)
 
 app.post('/login', CORS(LH3,'POST','Content-Type'), (req,res,next) => {
 
-    connection.query(`SELECT * FROM USERS WHERE UNAME=? AND PASS =?`, [req.body.username, req.body.password],(dberr,dbres) => {
+    const {body} = req;
+
+    userModel.findOne({username : body.username, password : body.password}, (dberr,dbres) => {
         if(dberr){
-            console.log(db_err,db_err);
+            console.log(dberr);
             res.status(500).json({err : db_err});
+            return;
         } else {
-            if(dbres.length === 0){
+            console.log(dbres);
+            if(dbres === null){
                 res.status(401).json({err : "Wrong Username or Password."});
             } else {
-                console.log(dbres);
-                jwt.sign({username : dbres[0].UNAME},SECRET,(err,token) => {
+                jwt.sign({username : dbres.username},SECRET,(err,token) => {
                     if(err){
                         res.status(500).json({err : "A server error occurred."});
                         return;
@@ -121,73 +131,99 @@ app.post('/login', CORS(LH3,'POST','Content-Type'), (req,res,next) => {
 })
 
 app.post('/register', CORS(LH3,'POST','Content-Type'), (req,res,next) => {
-    connection.query(`SELECT * FROM USERS WHERE UNAME=? AND PASS =?`, [req.body.username, req.body.password],(dberr,dbres) => {
+
+    userModel.findOne({username : req.body.username, password : req.body.password}, (dberr,dbres) => {
         if(dberr){
-            console.log(db_err,err);
+            console.log(dberr);
             res.status(500).json({err : db_err});
         } else {
-            if(dbres.length !== 0){
-                res.status(401).json({err : "User already exists, please select a different username."});
-            } else {
-                let {username, password: pass} = req.body;
-                connection.query(`INSERT INTO USERS(UNAME, PASS) VALUES(?,?)`,[username, pass], (dberr,dbres,fields) => {
-                    if(dberr){
-                        console.log(db_err,dberr);
+            console.log(dbres)
+            if(dbres === null){
+                const tempUserModel = new userModel();
+                tempUserModel.username = req.body.username;
+                tempUserModel.password = req.body.password;
+                tempUserModel.save((err) => {
+                    if(err){
+                        console.log(err);
                         res.status(500).json({err : db_err});
                     } else {
-                        jwt.sign({username},SECRET,(err,token) => {
-                            if(err){
-                                res.status(500).json({err : "A server error occurred."});
-                                return;
-                            } 
-                        res.status(200).json({token});
+                        jwt.sign({username : req.body.username},SECRET,(err,token) => {
+                                if(err){
+                                    res.status(500).json({err : "A server error occurred."});
+                                    return;
+                                } 
+                            res.status(200).json({token});
                         })
                     }
-
-                })
+                });
+            } else {
+                console.log(dbres);
+                res.status(401).json({err : "User already exists, please select a different username."});
             }
         }
-    })
+    });
 })
 
 app.post('/createTodo', CORS(LH3,'POST','Authorization, Content-Type'), AUTH, (req,res,next) => {
     console.log("CREATING!", req.body.todo);
     const todo = {...req.body.todo};
-    connection.query(`INSERT INTO 
-    TODOS(TODOID,UNAME,TITLE,DONE,IMPORTANCE,_MONTH,_YEAR,_DAY)
-     VALUES (?,?,?,?,?,?,?,?);
-    `, [uuid.v1(), req.username, todo.title, 'N', todo.importance, todo.month, todo.year, todo.day], (dberr, dbres, fields) => {
+
+    const tempTodoModel = new todoModel(); 
+    tempTodoModel.UNAME = req.username;
+    tempTodoModel.TODOID = uuid.v1();
+    tempTodoModel.TITLE = todo.title;
+    tempTodoModel.DONE = 'N';
+    tempTodoModel.IMPORTANCE = todo.importance;
+    tempTodoModel._MONTH = todo.month;
+    tempTodoModel._YEAR = todo.year;
+    tempTodoModel._DAY = todo.day;
+    tempTodoModel.save(dberr => {
         if(dberr){
             console.log(dberr);
             res.status(500).json({err : dberr});
         } else {
-            console.log('successfully inserted...', fields);
+            console.log('successfully inserted...');
             res.status(200).json({data : "DONE"})
         }
     })
-
 })
 
 app.post('/getTodos', CORS(LH3,'POST','Authorization, Content-Type'), AUTH, (req,res,next) => {
     console.log("GET TODOS")
-    connection.query(`SELECT *
-     FROM USERS NATURAL JOIN TODOS
-     WHERE UNAME = ? AND _MONTH = ? AND _YEAR = ?`,[req.username, req.body.month + 1, req.body.year],(dberr,dbres) => {
-         if(dberr){
-             res.status(500).json({err : dberr});
-         } else {
-             res.status(200).json({data : dbres})
-         }
-     })
+    const {body} = req;
 
+    console.log(body.month, body.year);
+
+    todoModel.find({
+        UNAME : req.username,
+        _MONTH : body.month + 1,
+        _YEAR : body.year
+    }, (dberr, dbres) => {
+        if(dberr){
+            console.log(dberr);
+            res.status(500).json({err : dberr});
+        } else {
+            const resData = dbres.map(ele => ({
+                TODOID : ele.TODOID,
+                UNAME : ele.UNAME,
+                _MONTH : ele._MONTH,
+                _YEAR : ele._YEAR,
+                _DAY : ele._DAY,
+                TITLE : ele.TITLE,
+                DONE : ele.DONE,
+                IMPORTANCE : ele.IMPORTANCE
+            }))
+            res.status(200).json({data : resData})
+        }
+    })
 })
 
 app.delete('/deleteTodo', CORS(LH3, 'DELETE', 'Authorization, todo-id'), AUTH, (req,res,next) => {
     console.log('DELETION...');
-    connection.query(`
-    DELETE FROM TODOS
-    WHERE TODOS.TODOID = ?; 
-    `, [req.headers['todo-id']], (dberr, dbres, fields) => {
+
+    todoModel.deleteOne({TODOID : req.headers['todo-id']}, (dberr,dbres) => {
+        console.log(dberr);
+        console.log(dbres);
         if(dberr){
             console.log(dberr);
             res.status(500).json({err : dberr});
@@ -202,19 +238,26 @@ app.put('/updateTodo', CORS(LH3, 'PUT', 'Authorization, todo-id'), AUTH, (req,re
     const [todoID, check] = req.headers['todo-id'].split('#');
     let actual = check === 'Y' ? 'N' : 'Y';
     console.log(todoID, check, actual);
-    connection.query(`
-    UPDATE TODOS
-    SET TODOS.DONE = ?
-    WHERE TODOS.TODOID = ?; 
-    `, [actual, todoID], (dberr, dbres, fields) => {
-        console.log(fields, dbres);
+
+    todoModel.findOneAndUpdate({TODOID : todoID}, {DONE : actual}, (dberr, dbres) => {
         if(dberr){
             console.log(dberr);
             res.status(500).json({err : dberr});
         } else {
             res.status(200).json({success : true})
-        }
+        } 
     })
 })
 
-app.listen(port, () => {console.log(`listening@${port}`)})
+if(process.env.NODE_ENV === 'PROD'){
+    console.log("HERE")
+    app.use(express.static('app/build'));
+    app.get('*', (req,res) => { 
+        res.sendFile(path.resolve(__dirname, 'app', 'build', 'index.html'));
+    })
+}
+
+app.listen(port, () => {
+    console.log(`listening@${port}`, process.env.PORT)
+    console.log(process.env.NODE_ENV);
+}) 

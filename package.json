@@ -16,6 +16,7 @@
     "concurrently": "^5.3.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.14",
     "month-days": "^3.0.0",
     "mysql": "^2.18.1",
     "uuid": "^8.3.2"

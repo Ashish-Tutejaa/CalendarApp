@@ -96,7 +96,7 @@ class App extends Component{
       if(res.err){
         console.log("ERROR IN GETTING...");
       } else {
-        console.log("GOTTEN TODOS: ",res.data);
+        // console.log("GOTTEN TODOS: ",res.data);
         this.setState({allTodos : res.data}, () => {
           if(this.state.showPanel === true){
 
